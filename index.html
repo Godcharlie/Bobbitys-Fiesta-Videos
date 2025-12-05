@@ -63,7 +63,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Company Stocks (not actually binding)</h1>
+        <h1>Fictional Stock Simulator</h1>
 
         <div class="portfolio-summary">
             <h2>Your Portfolio</h2>
@@ -86,7 +86,7 @@
         const ownedStocks = {};
 
         function generateStockData() {
-            const stockNames = ["Tacochain", "La Fiesta De Bobbitere", "Sushi Slices and Pizza Rolls", "Sumo sushi", "Fishin and Chipin"];
+            const stockNames = ["GloboCorp", "TechSynth", "CyberDyne", "AlphaBeta", "NextGen"];
             stockNames.forEach(name => {
                 stocks[name] = {
                     price: parseFloat((Math.random() * 100 + 50).toFixed(2)),
@@ -95,7 +95,7 @@
             });
         }
 
-function updateStockPrices() {
+        function updateStockPrices() {
             Object.keys(stocks).forEach(name => {
                 const stock = stocks[name];
                 
