@@ -100,18 +100,19 @@ function updateStockPrices() {
                 const stock = stocks[name];
                 
                 // Define the min and max price for the random change
-                const maxChange = 5; 
-                const minPrice = 5; // Set the minimum allowed price
+                const maxPrice = 0; 
+                const minPricepossible = 5; 
+                const minPrice = 100; // Set the minimum allowed price
 
                 // Calculate the price change
-                const priceChange = parseFloat(((Math.random() - 0.5) * maxChange).toFixed(2));
+                const priceChange = parseFloat((Math.random()* (maxPrice - minPrice) + minPrice;
                 
                 // Calculate the new price
                 let newPrice = stock.price + priceChange;
 
                 // --- CHECK AND ENFORCE MINIMUM PRICE HERE ---
-                if (newPrice < minPrice) {
-                    newPrice = minPrice;
+                if (newPrice < minPricepossible) {
+                    newPrice = minPricepossible;
                 }
                 // --- END OF CHECK ---
 
