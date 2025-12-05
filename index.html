@@ -2,62 +2,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-  .parallax {
-
-    background-image: url('img_parallax.jpg');
-
-   
-    height: 500px;
-
-    
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-</style>
-
-<head> 
-<style> 
-  @keyframes example {
-    from {
-      background-color: red;
-    } 
-    to {
-      background-color: yellow;
-    } 
-  }
-
-@keyframes slideIn { 
-  from {
-    margin-left: 100%;
-  } 
-  to {
-    margin-left: 0%;
-  } 
-}
-
-.animated-text { 
-  width: 100%; 
-  background-color: red; 
-  animation-name: example; 
-  animation-duration: 4s; 
-  animation-iteration-count: infinite; 
-  animation-direction: alternate; 
-}
-
-.slide-in-text { 
-  width: 100%; 
-  margin-left: 100%; 
-  animation: slideIn 2s forwards; 
-  } 
-</style> 
-</head> 
-<body>
-
-<h1 class="animated-text">Color Changing Text</h1> 
-<h1 class="slide-in-text">Slide-in Text Animation</h1>
-
+    <title>Fictional Business Stock</title>
+    <script src="cdn.jsdelivr.net"></script>
+    <style>
+        .chart-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
+    <div class="chart-container">
+        <canvas id="stockChart"></canvas>
+    </div>
+    <script>
+        function generateStockData(initialPrice, numPoints) {
+            const data = [];
+            let price = initialPrice;
+
+            for (let i = 0; i < numPoints; i++) {
+                // Randomly generate a small price change
+                const change_percent = (Math.random() * 2 - 1) * 0.05; // +/- 5% change
+                const change_amount = price * change_percent;
+                price = price + change_amount;
+                
+                // Ensure price doesn't go below zero
+                if (price < 0) price = 0.1;
+
+                data.push(price);
+            }
+            return data;
+        }
+
+        const initialPrice = 100;
+        const numDataPoints = 50;
+        const simulatedData = generateStockData(initialPrice, numDataPoints);
+        const labels = Array.from({ length: numDataPoints }, (_, i) => `Day ${i + 1}`);
+
+        // Find the canvas element and get its context
+        const ctx = document.getElementById('stockChart').getContext('2d');
+
+        // Create the chart
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Simulated Stock Price',
+                    data: simulatedData,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price ($)'
+                        },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
