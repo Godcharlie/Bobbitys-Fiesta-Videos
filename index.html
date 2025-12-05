@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fictional Stock Simulation</title>
+    <title>Fictional Stock Graph</title>
+    <!-- Include Chart.js library from a CDN -->
+    <script src="cdn.jsdelivr.net"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,154 +22,111 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1, h2 {
+        h1 {
             color: #444;
         }
-        .stock-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .stock-item:last-child {
-            border-bottom: none;
-        }
-        .stock-item button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .stock-item button.sell {
-            background-color: #f44336;
-        }
-        .stock-item .price {
-            font-weight: bold;
-        }
-        .stock-item .change.up {
-            color: green;
-        }
-        .stock-item .change.down {
-            color: red;
-        }
-        .portfolio-summary {
+        .chart-container {
             margin-top: 20px;
-            padding: 15px;
-            background: #e9ecef;
-            border-radius: 4px;
+            height: 400px; /* Set a fixed height for the chart */
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Fictional Stock Simulator</h1>
-
-        <div class="portfolio-summary">
-            <h2>Your Portfolio</h2>
-            <p>Cash: $<span id="cash-balance">10000</span></p>
-            <h3>Owned Stocks:</h3>
-            <ul id="owned-stocks-list"></ul>
+        <h1>Fictional Stock Market Graph</h1>
+        <p>Live simulation of two fictional company stocks: Alpha Dynamics and Beta Systems.</p>
+        
+        <div class="chart-container">
+            <canvas id="stockChart"></canvas>
         </div>
-
-        <h2>Stock Market</h2>
-        <div id="stock-list"></div>
     </div>
 
     <script>
-        const stockList = document.getElementById('stock-list');
-        const ownedStocksList = document.getElementById('owned-stocks-list');
-        const cashBalanceEl = document.getElementById('cash-balance');
-        
-        let cashBalance = 10000;
-        let stocks = {};
-        const ownedStocks = {};
+        // Initial fictional stock data
+        let alphaData = [50, 52, 51, 55, 54];
+        let betaData = [80, 78, 81, 79, 82];
+        let timeLabels = ["T-4", "T-3", "T-2", "T-1", "Now"];
 
-        function generateStockData() {
-            const stockNames = ["GloboCorp", "TechSynth", "CyberDyne", "AlphaBeta", "NextGen"];
-            stockNames.forEach(name => {
-                stocks[name] = {
-                    price: parseFloat((Math.random() * 100 + 50).toFixed(2)),
-                    change: 0
-                };
-            });
-        }
+        const ctx = document.getElementById('stockChart').getContext('2d');
 
-        function updateStockPrices() {
-            Object.keys(stocks).forEach(name => {
-                const stock = stocks[name];
-                const priceChange = parseFloat(((Math.random() - 0.5) * 5).toFixed(2));
-                stock.price = parseFloat((stock.price + priceChange).toFixed(2));
-                stock.change = priceChange;
-            });
-            renderStocks();
-        }
-
-        function renderStocks() {
-            stockList.innerHTML = '';
-            Object.keys(stocks).forEach(name => {
-                const stock = stocks[name];
-                const changeClass = stock.change > 0 ? 'up' : (stock.change < 0 ? 'down' : '');
-                const changeSign = stock.change > 0 ? '+' : '';
-                
-                const stockEl = document.createElement('div');
-                stockEl.className = 'stock-item';
-                stockEl.innerHTML = `
-                    <div>
-                        <strong>${name}</strong>
-                        <span class="price">$${stock.price}</span>
-                        <span class="change ${changeClass}">(${changeSign}${stock.change})</span>
-                    </div>
-                    <div>
-                        <button onclick="buyStock('${name}')">Buy</button>
-                    </div>
-                `;
-                stockList.appendChild(stockEl);
-            });
-            renderOwnedStocks();
-            cashBalanceEl.textContent = cashBalance.toFixed(2);
-        }
-
-        function renderOwnedStocks() {
-            ownedStocksList.innerHTML = '';
-            for (const name in ownedStocks) {
-                if (ownedStocks[name] > 0) {
-                    const ownedEl = document.createElement('li');
-                    ownedEl.innerHTML = `
-                        ${ownedStocks[name]} shares of <strong>${name}</strong>
-                        <button class="sell" onclick="sellStock('${name}')">Sell</button>
-                    `;
-                    ownedStocksList.appendChild(ownedEl);
+        // Initialize the Chart.js chart
+        const stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Alpha Dynamics',
+                        data: alphaData,
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4,
+                        fill: false
+                    },
+                    {
+                        label: 'Beta Systems',
+                        data: betaData,
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        tension: 0.4,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Stock Price ($)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    }
                 }
             }
-        }
+        });
 
-        function buyStock(name) {
-            const stockPrice = stocks[name].price;
-            if (cashBalance >= stockPrice) {
-                cashBalance -= stockPrice;
-                ownedStocks[name] = (ownedStocks[name] || 0) + 1;
-                renderStocks();
-            } else {
-                alert("Not enough cash to buy this stock!");
+        // Function to simulate a new stock price and update the chart
+        function updateChartData() {
+            // Generate random price changes for the two stocks
+            const alphaChange = (Math.random() - 0.5) * 3;
+            const betaChange = (Math.random() - 0.5) * 4;
+
+            const newAlphaPrice = parseFloat((alphaData[alphaData.length - 1] + alphaChange).toFixed(2));
+            const newBetaPrice = parseFloat((betaData[betaData.length - 1] + betaChange).toFixed(2));
+
+            // Add new data points
+            alphaData.push(newAlphaPrice);
+            betaData.push(newBetaPrice);
+
+            // Add a new label (e.g., just incrementing time)
+            timeLabels.push(`T+${alphaData.length - 5}`);
+
+            // Keep only the last 10 data points for a moving window
+            if (alphaData.length > 10) {
+                alphaData.shift();
+                betaData.shift();
+                timeLabels.shift();
             }
+
+            // Update the chart
+            stockChart.update();
         }
 
-        function sellStock(name) {
-            if (ownedStocks[name] > 0) {
-                const stockPrice = stocks[name].price;
-                cashBalance += stockPrice;
-                ownedStocks[name] -= 1;
-                renderStocks();
-            }
-        }
-
-        generateStockData();
-        setInterval(updateStockPrices, 3000);
-        renderStocks();
+        // Update the chart every 2 seconds (2000 milliseconds)
+        setInterval(updateChartData, 2000);
 
     </script>
 </body>
