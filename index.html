@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,9 +45,9 @@
     </div>
 
     <script>
-        // Initial fictional stock data
-        let alphaData = [50, 52, 51, 55, 54];
-        let betaData = [80, 78, 81, 79, 82];
+        // Initial fictional stock data - CORRECTED with starting values
+        let alphaData = [100, 102, 105, 103, 107];
+        let betaData = [110, 108, 109, 112, 111];
         let timeLabels = ["T-4", "T-3", "T-2", "T-1", "Now"];
 
         const ctx = document.getElementById('stockChart').getContext('2d');
@@ -127,7 +126,6 @@
 
         // Update the chart every 2 seconds (2000 milliseconds)
         setInterval(updateChartData, 2000);
-
     </script>
 </body>
 </html>
