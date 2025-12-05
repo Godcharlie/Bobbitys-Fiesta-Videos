@@ -95,15 +95,26 @@
             });
         }
 
-        function updateStockPrices() {
+               function updateStockPrices() {
             Object.keys(stocks).forEach(name => {
                 const stock = stocks[name];
-                const priceChange = parseFloat(((Math.random() - 0.5) * 5).toFixed(2));
-                stock.price = parseFloat((stock.price + priceChange).toFixed(2));
-                stock.change = priceChange;
+                
+                // Define the min and max price for the range
+                const minPrice = 0;
+                const maxPrice = 100;
+
+                // Calculate the new random price within the range
+                const newPrice = Math.random() * (maxPrice - minPrice) + minPrice;
+                
+                // Calculate the change for display purposes
+                const priceChange = newPrice - stock.price;
+
+                stock.price = parseFloat(newPrice.toFixed(2));
+                stock.change = parseFloat(priceChange.toFixed(2));
             });
             renderStocks();
         }
+
 
         function renderStocks() {
             stockList.innerHTML = '';
