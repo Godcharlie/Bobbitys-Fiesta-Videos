@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fictional Stock Simulation</title>
+    <title>Fictional Stock Simulation (Full Version)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,7 +19,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1, h2 {
+        h1, h2, h3 {
             color: #444;
         }
         .stock-item {
@@ -40,12 +40,14 @@
             cursor: pointer;
             border-radius: 4px;
             font-size: 14px;
+            margin-left: 5px;
         }
         .stock-item button.sell {
             background-color: #f44336;
         }
         .stock-item .price {
             font-weight: bold;
+            margin-right: 10px;
         }
         .stock-item .change.up {
             color: green;
@@ -59,15 +61,22 @@
             background: #e9ecef;
             border-radius: 4px;
         }
+        #owned-stocks-list li {
+            padding: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Fictional Stock Simulator</h1>
+        <p>Prices fluctuate between $1 and $100.</p>
 
         <div class="portfolio-summary">
             <h2>Your Portfolio</h2>
-            <p>Cash: $<span id="cash-balance">10000</span></p>
+            <p>Cash: $<span id="cash-balance">10000.00</span></p>
             <h3>Owned Stocks:</h3>
             <ul id="owned-stocks-list"></ul>
         </div>
@@ -81,15 +90,17 @@
         const ownedStocksList = document.getElementById('owned-stocks-list');
         const cashBalanceEl = document.getElementById('cash-balance');
         
-        let cashBalance = 10000;
+        let cashBalance = 10000.00;
         let stocks = {};
         const ownedStocks = {};
 
         function generateStockData() {
             const stockNames = ["GloboCorp", "TechSynth", "CyberDyne", "AlphaBeta", "NextGen"];
             stockNames.forEach(name => {
+                // Initialize stocks with a random price within the range
+                const initialPrice = Math.random() * (100 - 1) + 1;
                 stocks[name] = {
-                    price: parseFloat((Math.random() * 100 + 50).toFixed(2)),
+                    price: parseFloat(initialPrice.toFixed(2)),
                     change: 0
                 };
             });
@@ -99,32 +110,21 @@
             Object.keys(stocks).forEach(name => {
                 const stock = stocks[name];
                 
-                // Define the min and max price for the random change
-                const maxPrice = 0; 
-                const minPricepossible = 5; 
-                const minPrice = 100; // Set the minimum allowed price
-
-                // Calculate the price change
-                const priceChange = parseFloat((Math.random()* (maxPrice - minPrice) + minPrice;
+                // Define the min and max price for the range
+                const minPrice = 1;
+                const maxPrice = 100;
                 
-                // Calculate the new price
-                let newPrice = stock.price + priceChange;
-
-                // --- CHECK AND ENFORCE MINIMUM PRICE HERE ---
-                if (newPrice < minPricepossible) {
-                    newPrice = minPricepossible;
-                }
-                // --- END OF CHECK ---
-
-                // Recalculate change based on the final price
-                const finalChange = newPrice - stock.price;
+                // Calculate the new random price within the range
+                const newPrice = Math.random() * (maxPrice - minPrice) + minPrice;
+                
+                // Calculate the change for display purposes
+                const priceChange = newPrice - stock.price;
 
                 stock.price = parseFloat(newPrice.toFixed(2));
-                stock.change = parseFloat(finalChange.toFixed(2));
+                stock.change = parseFloat(priceChange.toFixed(2));
             });
             renderStocks();
         }
-
 
         function renderStocks() {
             stockList.innerHTML = '';
@@ -138,11 +138,11 @@
                 stockEl.innerHTML = `
                     <div>
                         <strong>${name}</strong>
-                        <span class="price">$${stock.price}</span>
-                        <span class="change ${changeClass}">(${changeSign}${stock.change})</span>
+                        <span class="price">$${stock.price.toFixed(2)}</span>
+                        <span class="change ${changeClass}">(${changeSign}${stock.change.toFixed(2)})</span>
                     </div>
                     <div>
-                        <button onclick="buyStock('${name}')">Buy</button>
+                        <button onclick="buyStock('${name}')">Buy (1)</button>
                     </div>
                 `;
                 stockList.appendChild(stockEl);
@@ -158,7 +158,7 @@
                     const ownedEl = document.createElement('li');
                     ownedEl.innerHTML = `
                         ${ownedStocks[name]} shares of <strong>${name}</strong>
-                        <button class="sell" onclick="sellStock('${name}')">Sell</button>
+                        <button class="sell" onclick="sellStock('${name}')">Sell (1)</button>
                     `;
                     ownedStocksList.appendChild(ownedEl);
                 }
@@ -185,8 +185,9 @@
             }
         }
 
+        // Initialize and start the simulation
         generateStockData();
-        setInterval(updateStockPrices, 3000);
+        setInterval(updateStockPrices, 3000); // Update prices every 3 seconds
         renderStocks();
 
     </script>
